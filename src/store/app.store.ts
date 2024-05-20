@@ -1,14 +1,17 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+export type PaymentMethod =  'Efectivo' | 'Tarjeta'
+
 export interface Data {
   estado: 'pendiente' | 'pagado'
   fecha?: Date
   id: string
   porcentaje: number
   titulo: string
-  totalCobrar: number
   valor: number
+  fechaPago?: Date
+  metodoPago?: PaymentMethod
 }
 
 interface State {
@@ -19,7 +22,11 @@ interface State {
   addTemporalData: (index:number,data: Data) => void
   changeIsEditable: ()=>void
   editTemporalDataItem: (index:number, data:Data)=>void
+  editDataItem: (index:number, data:Data)=>void
+  saveToData: ()=>void
 }
+
+const initialId= crypto.randomUUID()
 
 
 export const useDataStore = create<State>()(
@@ -28,24 +35,24 @@ export const useDataStore = create<State>()(
       isEditable:false,
       data: [
         {
-          id: crypto.randomUUID(),
-          totalCobrar: 182,
+          id: initialId,
           titulo: 'Anticipo',
           valor: 182,
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
-          estado: 'pendiente' 
+          estado: 'pagado',
+          metodoPago: 'Tarjeta'
         },
       ],
       temporalData: [
         {
-          id: crypto.randomUUID(),
-          totalCobrar: 182,
+          id: initialId,
           titulo: 'Anticipo',
           valor: 182,
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
-          estado: 'pendiente' 
+          estado: 'pagado',
+          metodoPago: 'Tarjeta'
         },
       ],
 
@@ -57,6 +64,7 @@ export const useDataStore = create<State>()(
         temporalData: [...state.temporalData.slice(0,index), data, ...state.temporalData.slice(index)]
       })),
       changeIsEditable: ()=>set((state)=>({isEditable: !state.isEditable, data:[...state.temporalData]})),
+      saveToData: ()=>set((state)=>({data:[...state.temporalData]})),
       editTemporalDataItem: (index, data)=>{
         set((state)=>({
           temporalData: state.temporalData.map((td, i)=>{
@@ -65,41 +73,19 @@ export const useDataStore = create<State>()(
             }
             return td
         })}))
-      }
+      },
+      editDataItem: (index, info)=>{
+        set((state)=>({
+          data: state.data.map((td, i)=>{
+            if(i===index){
+              return info
+            }
+            return td
+        })}))
+      },
     }),
     {
       name: 'data'
     }
   )
 )
-
-// updateProductQuantity: (product: CartProduct, quantity: number) => {
-//   const { cart } = get();
-
-//   const updateQuantity = cart.map( (item) => {
-//     if (item.id === product.id && item.size === product.size) {
-//       return { ...item, quantity: quantity };
-//     }
-//     return item;
-//   } )
-
-//   set({cart: updateQuantity})
-// },
-
-//   // actualiza (agrego) la cantidad de productos por talla en el carrito
-//   const updatedCartProducts = cart.map((item) => {
-//     if (item.id === product.id && item.size === product.size) {
-//       return { ...item, quantity: item.quantity + product.quantity };
-//     }
-
-//     return item;
-//   });
-
-//   set({ cart: updatedCartProducts });
-// },
-
-// export const useUiStore = create<State>()((set) => ({
-//   isSideMenuOpen: false,
-//   openSideMenu: () => set({isSideMenuOpen: true}),
-//   closeSideMenu: () => set({isSideMenuOpen: false})
-// }))
