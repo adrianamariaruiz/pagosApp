@@ -1,15 +1,12 @@
 import { IoPencilSharp } from "react-icons/io5"
 import Pagos from "../components/Pagos"
-import { useDataStore } from "../store/app.store"
-
-export const INITIAL_PAY = 182
+import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
 
 const HomePage = () => {
 
    const isEditable = useDataStore((store)=>store.isEditable)
    const changeIsEditable = useDataStore((store)=>store.changeIsEditable)
-
-  const totalValue = 182
+   const totalToPay = useDataStore((store)=>store.totalToPay)
 
   return (
     <div className="m-4">
@@ -37,7 +34,7 @@ const HomePage = () => {
           </div>
           <div className="flex gap-2">
             <p className="text-graycustom">Por cobrar</p>
-            <p className="font-bold text-xl">{totalValue} USD</p>
+            <p className="font-bold text-xl">{totalToPay} {CURRENCY_FORMAT}</p>
           </div>
         </div>
       </div>

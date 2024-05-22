@@ -1,17 +1,20 @@
 import { useCallback, useMemo, useState } from "react"
 import ModalPaid from "./ModalPaid"
 import { IoPencilSharp, IoTrashOutline } from "react-icons/io5"
-import { PaymentMethod, useDataStore } from "../store/app.store"
+import { CURRENCY_FORMAT, PaymentMethod, useDataStore } from "../store/app.store"
 import AddPay from "../pages/AddPay"
 import BtnAddPay from "./BtnAddPay"
 import { dataFormatMonths } from "../helpers/dataFormatMonths"
 
 const Pagos = () => {
+
   const { data, saveToData, temporalData, editTemporalDataItem, addTemporalData, changeIsEditable, isEditable } = useDataStore((state) => state)
   const [isOpen, setIsOpen] = useState(false)
   const [dataId, setDataId] = useState('') 
 
   const currentData = useMemo(()=>temporalData.find(nd=>nd.id===dataId),[temporalData, dataId])
+  const currentIndex = useMemo(()=>temporalData.findIndex(nd=>nd.id===dataId),[temporalData, dataId])
+  
 
   const opacityButton = useCallback( () => {
     if(temporalData.length > 1){
@@ -26,21 +29,31 @@ const Pagos = () => {
     setIsOpen(true)
   }
 
-  // console.log(dataId)
-
   const closeModal = () => {
     setIsOpen(false)
   }
 
-  const currentIndex = useMemo(()=>temporalData.findIndex(nd=>nd.id===dataId),[temporalData, dataId])
-
   const savePaid = () => {
-    // aca hago un post al api para guardar la informacion de pago
     handlePayChange(new Date())
+
+    // cambiar el estado a pagado
+    handleChangeState()
+
     // guardar en la data definitiva una copia
     saveToData()
     closeModal()
-  }
+  }  
+
+  const handleChangeState = useCallback(() => {
+    if (!currentData) return
+    editTemporalDataItem(
+      currentIndex,
+      {
+        ...currentData,
+        estado: "pagado"
+      })
+  }, [currentData, editTemporalDataItem, currentIndex]
+  )
 
   const handlePayChange = useCallback((value: Date) => {
     if(!currentData) return
@@ -70,22 +83,70 @@ const Pagos = () => {
       )
   }, [currentData, currentIndex, editTemporalDataItem] )
   
-
+  
+// HANDLEADDCARD <============== // ================
   const handleAddCard = useCallback((index: number) => {
     if (!isEditable) {
-      changeIsEditable()
+      changeIsEditable();
     }
-    addTemporalData(index + 1, {
-      id: crypto.randomUUID(),
-      titulo: 'Pago ' + (temporalData.length + 1),
-      valor: 0,
-      porcentaje: 0,
-      estado: 'pendiente'
-    })
-  }, [addTemporalData, temporalData, changeIsEditable, isEditable])
+
+    if(temporalData[index].estado === 'pagado'){
+      const nextPendingIndex = temporalData.findIndex((item, i) => i > index && item.estado === 'pendiente')
+      console.log(nextPendingIndex)
+      
+      if(nextPendingIndex !== -1){
+        const totalValue = temporalData[nextPendingIndex].valor;
+        const totalPercentage = temporalData[nextPendingIndex].porcentaje;
+        
+        addTemporalData(nextPendingIndex + 1, {
+          id: crypto.randomUUID(),
+          titulo: 'Pago ' + (temporalData.length + 1),
+          valor: totalValue/2,
+          porcentaje: totalPercentage/2,
+          estado: 'pendiente'
+        })
+        editTemporalDataItem(
+          nextPendingIndex, 
+        { 
+          id: temporalData[index].id,
+          titulo: temporalData[index].titulo,
+          valor: totalValue/2,
+          porcentaje: totalPercentage/2,
+          estado: temporalData[index].estado,
+          fecha: temporalData[index].fecha,
+          metodoPago: temporalData[index].metodoPago
+        })
+      }else {
+        console.error('No hay pagos pendientes para dividir.');
+        return;
+      }
+    } else {
+      const totalValue = temporalData[index].valor
+      const totalPercentage = temporalData[index].porcentaje
+
+      addTemporalData(index + 1, {
+        id: crypto.randomUUID(),
+        titulo: 'Pago ' + (temporalData.length + 1),
+        valor: totalValue/2,
+        porcentaje: totalPercentage/2,
+        estado: 'pendiente'
+      })
+      editTemporalDataItem(
+        index, 
+      { 
+        id: temporalData[index].id,
+        titulo: temporalData[index].titulo,
+        valor: totalValue/2,
+        porcentaje: totalPercentage/2,
+        estado: temporalData[index].estado,
+        fecha: temporalData[index].fecha,
+        metodoPago: temporalData[index].metodoPago
+      })
+    }
+  
+  }, [addTemporalData, temporalData, changeIsEditable, isEditable, editTemporalDataItem])
 
   const formatDate = (dateToFormat: string) => {
-    console.log(dateToFormat)
     const [day, month, year] = dateToFormat.split('/')
     const monthName = dataFormatMonths(month)
     return `${day} ${monthName}, ${year}`;
@@ -109,7 +170,6 @@ const Pagos = () => {
                     <div key={item.id} className="flex flex-row">
                       <AddPay
                         dataId={item.id}
-                        formatDate={formatDate}
                       />
                       {
                         (temporalData.length - 1 !== index) &&
@@ -125,11 +185,12 @@ const Pagos = () => {
                       <div  className= "relative w-44 flex flex-col items-center border border-fuchsia-500 py-10 px-2">
                       
                         {
-                          item.estado === 'pendiente' ?
+                          item.estado === 'pendiente'  ?
                           <>
                             <button 
                               className="w-12 h-12 rounded-full border-2 border-tangerine-700 flex justify-center items-center" 
                               onClick={()=>handleClick(item.id)}
+                              disabled={temporalData[index-1]?.estado === 'pendiente'}
                             >
                               <IoPencilSharp className="h-5 w-5 text-tangerine-700 font-light opacity-0 hover:opacity-100 transition-opacity duration-75 absolute" />
                             </button>
@@ -145,7 +206,7 @@ const Pagos = () => {
                         </>
                         }
                         <p className="font-bold">{item.titulo}</p>
-                        <p className="font-semibold">{Number.isInteger(item.valor) ? item.valor : item.valor.toFixed(1)} USD <span>({Number.isInteger(item.porcentaje) ? item.porcentaje : item.porcentaje.toFixed(1)}%)</span></p>
+                        <p className="font-semibold">{Number.isInteger(item.valor) ? item.valor : item.valor.toFixed(1)} {CURRENCY_FORMAT} <span>({Number.isInteger(item.porcentaje) ? item.porcentaje : item.porcentaje.toFixed(1)}%)</span></p>
                         {
                           item.estado === 'pagado' 
                           ? <div className="text-green-700"><p>{item.estado}</p> <p>{formatDate(new Date(item?.fecha ?? '').toLocaleDateString())}</p> <p>con {item.metodoPago}</p></div> 

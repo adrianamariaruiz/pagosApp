@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import currentFormat from '../helpers/currentFormat'
 
 export type PaymentMethod =  'Efectivo' | 'Tarjeta'
 
@@ -18,6 +19,7 @@ interface State {
   data: Data[]
   temporalData: Data[]
   isEditable: boolean
+  totalToPay: string
   addData: (index:number,data: Data) => void
   addTemporalData: (index:number,data: Data) => void
   changeIsEditable: ()=>void
@@ -27,12 +29,15 @@ interface State {
 }
 
 const initialId= crypto.randomUUID()
-
+export const INITIAL_PAY = 182
+export const CURRENCY_FORMAT = 'USD'
+const FORMAT_COUNTRY = 'en-US'
 
 export const useDataStore = create<State>()(
   persist(
     (set) => ({
       isEditable:false,
+      totalToPay: currentFormat(INITIAL_PAY, CURRENCY_FORMAT, FORMAT_COUNTRY),
       data: [
         {
           id: initialId,
@@ -40,7 +45,7 @@ export const useDataStore = create<State>()(
           valor: 182,
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
-          estado: 'pagado',
+          estado: 'pendiente',
           metodoPago: 'Tarjeta'
         },
       ],
@@ -51,7 +56,7 @@ export const useDataStore = create<State>()(
           valor: 182,
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
-          estado: 'pagado',
+          estado: 'pendiente',
           metodoPago: 'Tarjeta'
         },
       ],
