@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import currentFormat from '../helpers/currentFormat'
 
-export type PaymentMethod =  'Efectivo' | 'Tarjeta'
+export type PaymentMethod =  'Efectivo' | 'Tarjeta' 
 
 export interface Data {
   estado: 'pendiente' | 'pagado'
@@ -46,7 +46,7 @@ export const useDataStore = create<State>()(
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
           estado: 'pendiente',
-          metodoPago: 'Tarjeta',
+          metodoPago: undefined,
           fechaPago: undefined
         },
       ],
@@ -58,7 +58,7 @@ export const useDataStore = create<State>()(
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
           estado: 'pendiente',
-          metodoPago: 'Tarjeta',
+          metodoPago: undefined,
           fechaPago: undefined
         },
       ],
