@@ -1,14 +1,16 @@
 import { IoAdd } from "react-icons/io5"
 
 interface Props {
-  handleAddCard: (index:number) => void
   index: number
+  opacityButton: ()=>void
+  handleAddCard: (index:number) => void
 }
 
-const BtnAddPay = ({handleAddCard, index}: Props) => {
+const BtnAddPay = ({handleAddCard, index, opacityButton}: Props) => {
   return (
     <div className="w-24 border border-green-600 py-12 px-5">
-      <div className="flex flex-col items-center  opacity-0 hover:opacity-100 border">
+      <div className={`flex flex-col items-center ${opacityButton()} hover:opacity-100 border`}>
+      {/* <div className="flex flex-col items-center  opacity-0 hover:opacity-100 border"> */}
         <button
           className="w-10 h-10 rounded-full bg-graycustom-400 text-tangerine-700 flex justify-center items-center"
           onClick={() => handleAddCard(index)}
