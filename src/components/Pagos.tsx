@@ -103,7 +103,8 @@ const Pagos = () => {
           titulo: 'Pago ' + (temporalData.length + 1),
           valor: totalValue/2,
           porcentaje: totalPercentage/2,
-          estado: 'pendiente'
+          estado: 'pendiente',
+          fecha: new Date()
         })
         editTemporalDataItem(
           nextPendingIndex, 
@@ -129,7 +130,8 @@ const Pagos = () => {
         titulo: 'Pago ' + (temporalData.length + 1),
         valor: totalValue/2,
         porcentaje: totalPercentage/2,
-        estado: 'pendiente'
+        estado: 'pendiente',
+        fecha: new Date()
       })
       editTemporalDataItem(
         index, 

@@ -6,7 +6,7 @@ export type PaymentMethod =  'Efectivo' | 'Tarjeta'
 
 export interface Data {
   estado: 'pendiente' | 'pagado'
-  fecha?: Date
+  fecha: Date
   id: string
   porcentaje: number
   titulo: string
@@ -24,7 +24,7 @@ interface State {
   addTemporalData: (index:number,data: Data) => void
   changeIsEditable: ()=>void
   editTemporalDataItem: (index:number, data:Data)=>void
-  editDataItem: (index:number, data:Data)=>void
+  // editDataItem: (index:number, data:Data)=>void
   saveToData: ()=>void
 }
 
@@ -79,15 +79,15 @@ export const useDataStore = create<State>()(
             return td
         })}))
       },
-      editDataItem: (index, info)=>{
-        set((state)=>({
-          data: state.data.map((td, i)=>{
-            if(i===index){
-              return info
-            }
-            return td
-        })}))
-      },
+      // editDataItem: (index, info)=>{
+      //   set((state)=>({
+      //     data: state.data.map((td, i)=>{
+      //       if(i===index){
+      //         return info
+      //       }
+      //       return td
+      //   })}))
+      // },
     }),
     {
       name: 'data'

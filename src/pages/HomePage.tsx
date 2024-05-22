@@ -7,6 +7,12 @@ const HomePage = () => {
    const isEditable = useDataStore((store)=>store.isEditable)
    const changeIsEditable = useDataStore((store)=>store.changeIsEditable)
    const totalToPay = useDataStore((store)=>store.totalToPay)
+   const saveToData = useDataStore((store)=>store.saveToData)
+
+   const onClickSaveData = () => {
+    saveToData()
+    changeIsEditable()
+   }
 
   return (
     <div className="m-4">
@@ -22,7 +28,7 @@ const HomePage = () => {
               <div 
                 className="flex justify-center items-center gap-1 text-tangerine-600 font-semibold"
               >
-                <button className="h-10 bg-tangerine-700 text-white rounded-md px-4" onClick={changeIsEditable}>Guardar</button>
+                <button className="h-10 bg-tangerine-700 text-white rounded-md px-4" onClick={onClickSaveData}>Guardar</button>
               </div>
               </>
               :
