@@ -98,7 +98,7 @@ const AddPay = ({ dataId }: Props) => {
 
   return (
     <div
-      className="w-48 flex flex-col items-center border border-blue-600 py-10 gap-2"
+      className="w-36 flex flex-col items-center border border-blue-600 py-10 gap-2"
     >
       {
         currentData.estado === 'pagado'
@@ -136,7 +136,7 @@ const AddPay = ({ dataId }: Props) => {
             className="font-semibold w-full outline-none"
             value={Number.isInteger(currentData.porcentaje) ? currentData.porcentaje : currentData.porcentaje.toFixed(1)}
             disabled={currentData.estado === 'pagado'}
-            onChange={()=>{}}
+            onChange={() => { }}
           // onChange={(e) => hanldeChangePercentage(currentData.porcentaje, Number(e.target.value))}
           />
           <span>%</span>

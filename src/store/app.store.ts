@@ -24,7 +24,7 @@ interface State {
   addTemporalData: (index:number,data: Data) => void
   changeIsEditable: ()=>void
   editTemporalDataItem: (index:number, data:Data)=>void
-  // editDataItem: (index:number, data:Data)=>void
+  editDataItem: (index:number, data:Data)=>void
   saveToData: ()=>void
 }
 
@@ -46,7 +46,8 @@ export const useDataStore = create<State>()(
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
           estado: 'pendiente',
-          metodoPago: 'Tarjeta'
+          metodoPago: 'Tarjeta',
+          fechaPago: undefined
         },
       ],
       temporalData: [
@@ -57,7 +58,8 @@ export const useDataStore = create<State>()(
           porcentaje: 100,
           fecha: new Date('2024-05-05'),
           estado: 'pendiente',
-          metodoPago: 'Tarjeta'
+          metodoPago: 'Tarjeta',
+          fechaPago: undefined
         },
       ],
 
@@ -79,15 +81,15 @@ export const useDataStore = create<State>()(
             return td
         })}))
       },
-      // editDataItem: (index, info)=>{
-      //   set((state)=>({
-      //     data: state.data.map((td, i)=>{
-      //       if(i===index){
-      //         return info
-      //       }
-      //       return td
-      //   })}))
-      // },
+      editDataItem: (index, info)=>{
+        set((state)=>({
+          data: state.data.map((td, i)=>{
+            if(i===index){
+              return info
+            }
+            return td
+        })}))
+      },
     }),
     {
       name: 'data'

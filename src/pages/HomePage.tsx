@@ -1,4 +1,4 @@
-import { IoPencilSharp } from "react-icons/io5"
+import { IoChevronDown, IoPencilSharp } from "react-icons/io5"
 import Pagos from "../components/Pagos"
 import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
 import { useState } from "react"
@@ -27,7 +27,10 @@ const HomePage = () => {
     <div className="m-4">
       {/* header */}
       <div className="flex justify-between my-10">
-        <div className="text-tangerine text-xl font-bold">Pagos</div>
+        <div className="text-tangerine text-xl font-bold flex items-center gap-2">
+          <p>Pagos</p>
+          <IoChevronDown className="h-full w-5 text-tangerine font-light flex items-end"/>
+        </div>
 
         {
           !isSaveDate && <p className="text-tangerine font-bold text-xl">Porfavor escoja una fecha en el calendario</p>
