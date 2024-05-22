@@ -6,7 +6,7 @@ export type PaymentMethod =  'Efectivo' | 'Tarjeta'
 
 export interface Data {
   estado: 'pendiente' | 'pagado'
-  fecha: Date
+  fecha?: Date
   id: string
   porcentaje: number
   titulo: string

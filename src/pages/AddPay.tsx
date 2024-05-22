@@ -20,6 +20,7 @@ const AddPay = ({ dataId }: Props) => {
 
   const handleChangeDate = useCallback((value: Date) => {
     if (!currentData) return
+    console.log(value)
     editTemporalData(
       currentIndex,
       {
