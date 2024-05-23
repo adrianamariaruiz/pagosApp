@@ -1,19 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import currentFormat from '../helpers/currentFormat'
-
-export type PaymentMethod =  'Efectivo' | 'Tarjeta' 
-
-export interface Data {
-  estado: 'pendiente' | 'pagado'
-  fecha?: Date
-  id: string
-  porcentaje: number
-  titulo: string
-  valor: number
-  fechaPago?: Date
-  metodoPago?: PaymentMethod
-}
+import { Data } from '../interfaces/data.interface'
 
 interface State {
   data: Data[]
@@ -67,11 +55,15 @@ export const useDataStore = create<State>()(
       addData: (index:number, data: Data) => set((state)=>({
         data: [...state.data.slice(0,index), data, ...state.data.slice(index)]
       })),
+
+      
       addTemporalData: (index:number, data: Data) => set((state)=>({
         temporalData: [...state.temporalData.slice(0,index), data, ...state.temporalData.slice(index)]
       })),
       changeIsEditable: ()=>set((state)=>({isEditable: !state.isEditable, data:[...state.temporalData]})),
+      
       saveToData: ()=>set((state)=>({data:[...state.temporalData]})),
+      
       editTemporalDataItem: (index, data)=>{
         set((state)=>({
           temporalData: state.temporalData.map((td, i)=>{

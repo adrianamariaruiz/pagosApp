@@ -62,7 +62,6 @@ const AddPay = ({ dataId }: Props) => {
 
     if ((currentIndex !== 0) && (newData[indexToEdit].estado === 'pagado')) {
       const beforeCardPercentage = action === 'add' ? newData[currentIndex + 1].porcentaje - 1 : newData[currentIndex + 1].porcentaje + 1
-
       // modifica la siguiente
       editTemporalData(
         currentIndex + 1,
@@ -96,7 +95,6 @@ const AddPay = ({ dataId }: Props) => {
           </div>
           : <>
           <button className="bg-white w-12 h-12 rounded-full border-2 border-tangerine-700"></button>
-          {/* <hr className="border border-graycustom-400 w-full lg:w-4/5 absolute left-12 top-[90px]" /> */}
           </>
       }
       <input
