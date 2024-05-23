@@ -1,3 +1,4 @@
+// Esta función de formatear los meses la hice porque la necesitaba para mostrar la fecha como la solicitaron
 export const dataFormatMonths = (month: string) => {
   switch (month) {
     case '1': return 'Enero';

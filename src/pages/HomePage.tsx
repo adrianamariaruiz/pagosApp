@@ -1,7 +1,10 @@
-import { IoChevronDown, IoPencilSharp } from "react-icons/io5"
-import Pagos from "../components/Pagos"
-import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
 import { useState } from "react"
+import { IoChevronDown, IoPencilSharp } from "react-icons/io5"
+import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
+import { dataArrayValidation } from "../validations/dataSchema"
+import Pagos from "../components/Pagos"
+
+// use Tailwind para los estilos porque me gusta, la conozco y es facil de usar, se pueden generar estilos custom para determinadas partes de codigo que se sabe se van a repetir mucho y crear colores, fuentes, tamaños, etc. que se van a usar en todo el proyecto.
 
 const HomePage = () => {
 
@@ -11,14 +14,22 @@ const HomePage = () => {
    const saveToData = useDataStore((store)=>store.saveToData)
    const newData = useDataStore((store) => store.temporalData)
 
-   const [isSaveDate, setIsSaveDate] = useState(true)
+   const [errorData, setErrorData] = useState('')
+
+  //  Hacer GET a la DB para obtener la información
    
    const onClickSaveData = () => {
-    const isSaveDateSet = newData.every((item) => item.fecha !== undefined)
-    setIsSaveDate(isSaveDateSet)
 
-    if(!isSaveDateSet) return
+    const validateResponse = dataArrayValidation.safeParse(newData)
+    if(!validateResponse.success){
+      const errorMessages = validateResponse.error.errors[0].message;
+      setErrorData(errorMessages)
+      return
+    }
 
+    setErrorData('')
+
+    // Aca hacer un POST a la DB para guardar 
     saveToData()
     changeIsEditable()
    }
@@ -33,10 +44,9 @@ const HomePage = () => {
         </div>
 
         {
-          !isSaveDate && <p className="text-tangerine font-bold text-xl">Porfavor escoja una fecha en el calendario</p>
+          errorData && <p className="text-tangerine font-bold text-xl">{errorData}</p>
         }
            
-
         <div className="flex gap-5">
           <div className="flex justify-center items-center gap-1 text-tangerine-600 font-semibold">
             {

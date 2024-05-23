@@ -42,6 +42,7 @@ const AddPay = ({ dataId }: Props) => {
   }, [currentData, editTemporalData, currentIndex]
   )
 
+  // use este onChange con parametros de add o remove para hacerlo en un solo paso y no repetir tanto codigo
   const handleChangePercentage = useCallback((action: 'add' | 'remove') => {
     if (!currentData || currentIndex === -1) return
 
@@ -52,7 +53,6 @@ const AddPay = ({ dataId }: Props) => {
 
     if (totalPercentage > 100 || newPercentage < 0 || nextCardPercentage < 0) return
 
-    // modifica la card actual
     editTemporalData(
       currentIndex,
       {
@@ -62,8 +62,7 @@ const AddPay = ({ dataId }: Props) => {
 
     if ((currentIndex !== 0) && (newData[indexToEdit].estado === 'pagado')) {
       const beforeCardPercentage = action === 'add' ? newData[currentIndex + 1].porcentaje - 1 : newData[currentIndex + 1].porcentaje + 1
-
-      // modifica la siguiente
+      
       editTemporalData(
         currentIndex + 1,
         {
@@ -71,7 +70,7 @@ const AddPay = ({ dataId }: Props) => {
           porcentaje: beforeCardPercentage, valor: (beforeCardPercentage / 100) * initialPay
         })
     } else {
-      // modifica la card anterior
+      
       editTemporalData(
         indexToEdit,
         {
@@ -96,7 +95,6 @@ const AddPay = ({ dataId }: Props) => {
           </div>
           : <>
           <button className="bg-white w-12 h-12 rounded-full border-2 border-tangerine-700"></button>
-          {/* <hr className="border border-graycustom-400 w-full lg:w-4/5 absolute left-12 top-[90px]" /> */}
           </>
       }
       <input
@@ -106,6 +104,7 @@ const AddPay = ({ dataId }: Props) => {
         onChange={(e) => handleChangeTitle(e.target.value)}
       />
 
+      {/* realice validaciones de numeros enteros o decimales con 1 solo decimal aca para mostrarlo formateado, pero en la data está en el formato correcto con decimales (si los tiene) */}
       <div className="flex border border-graycustom rounded-sm px-1">
         <input
           className="font-semibold w-full outline-none"
