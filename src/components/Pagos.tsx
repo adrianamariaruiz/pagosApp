@@ -13,9 +13,9 @@ const Pagos = () => {
   const { data, saveToData, temporalData, editTemporalDataItem, addTemporalData, changeIsEditable, isEditable } = useDataStore((state) => state)
   const [isOpen, setIsOpen] = useState(false)
   const [dataId, setDataId] = useState('')
-  // const [isSaveSelect, setIsSaveSelect] = useState(true)
   const [errorData, setErrorData] = useState('')
 
+  // use los hooks de react useMemo y el useCallback para ahorrar memoria y que no se este calculando o ejecutando con cada renderización
   const currentData = useMemo(() => temporalData.find(nd => nd.id === dataId), [temporalData, dataId])
   const currentIndex = useMemo(() => temporalData.findIndex(nd => nd.id === dataId), [temporalData, dataId])
 
@@ -37,7 +37,6 @@ const Pagos = () => {
   }
 
   const savePaid = () => {
-    // cambiar el estado a pagado
     handleChangePay(new Date())
 
     const validateResponse = dataRequiredSchema.safeParse(currentData)
@@ -73,9 +72,7 @@ const Pagos = () => {
     closeModal()
   }
 
-  // guardo el metodo de pago en la data temporal
   const onChangeMethodPay = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value)
     if (!currentData) return
     editTemporalDataItem(
       currentIndex, {
@@ -90,17 +87,13 @@ const Pagos = () => {
       changeIsEditable();
     }
 
+    // hice una validación del estado del pago porque lo necesitaba para saber que acción tomar, si modificar el siguiente pago o el anterior
     if(temporalData[index].estado === 'pagado'){
       const nextPendingIndex = index+1
-      console.log(index)
-      console.log(nextPendingIndex)
-      console.log(temporalData[index].titulo)
 
       if(nextPendingIndex !== -1){
         const totalValue = temporalData[nextPendingIndex].valor;
-        console.log(totalValue)
         const totalPercentage = temporalData[nextPendingIndex].porcentaje;
-        console.log(totalPercentage)
 
         addTemporalData(nextPendingIndex + 1, {
           id: crypto.randomUUID(),
@@ -151,6 +144,7 @@ const Pagos = () => {
   }, [addTemporalData, temporalData, changeIsEditable, isEditable, editTemporalDataItem])
 
 
+
   const formatDate = (dateToFormat: string) => {
     const [day, month, year] = dateToFormat.split('/')
     const monthName = dataFormatMonths(month)
@@ -169,6 +163,7 @@ const Pagos = () => {
           }
           <div className="relative w-[900px] flex overflow-x-auto whitespace-nowrap">
 
+            {/* Lo maneje afectando la temporal data miestras completaba los datos para luego empujarlos a la data final y asi mostrar la necesaria en el momento correcto */}
             {
               isEditable
                 ?
@@ -230,7 +225,6 @@ const Pagos = () => {
                       {
                         (data.length - 1 !== index || index === 0) &&
                         <BtnAddPay handleAddCard={handleAddCard} index={index} opacityButton={opacityButton} />
-
                       }
 
                     </div>

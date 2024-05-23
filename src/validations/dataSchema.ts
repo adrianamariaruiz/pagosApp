@@ -1,5 +1,8 @@
 import {z} from 'zod'
 
+
+//Realice 2 schemas diferentes porque en la dataArrayValidation es para usarla en el momento de agregar un pago y ahi debe validar un array que en ese momento tiene metodoPago y fechaPago en undefined y dataRequiredSchema se usa en el momento de guardar el metodoPago y fechaPago, en ese momento ya debe tener toda la otra información.
+
 export const metodosPago = ['Efectivo','Tarjeta'] as const;
 
 export const dataSchema = z.object({
