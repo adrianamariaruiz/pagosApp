@@ -1,17 +1,20 @@
 import { useCallback, useMemo, useState } from "react"
-import ModalPaid from "./ModalPaid"
 import { IoPencilSharp, IoTrashOutline } from "react-icons/io5"
-import { CURRENCY_FORMAT, PaymentMethod, useDataStore } from "../store/app.store"
+import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
+import { PaymentMethod } from "../interfaces/data.interface"
+import { dataFormatMonths } from "../helpers/dataFormatMonths"
+import ModalPaid from "./ModalPaid"
 import AddPay from "./AddPay"
 import BtnAddPay from "./BtnAddPay"
-import { dataFormatMonths } from "../helpers/dataFormatMonths"
+import { dataRequiredSchema } from "../validations/dataSchema"
 
 const Pagos = () => {
 
   const { data, saveToData, temporalData, editTemporalDataItem, addTemporalData, changeIsEditable, isEditable } = useDataStore((state) => state)
   const [isOpen, setIsOpen] = useState(false)
   const [dataId, setDataId] = useState('')
-  const [isSaveSelect, setIsSaveSelect] = useState(true)
+  // const [isSaveSelect, setIsSaveSelect] = useState(true)
+  const [errorData, setErrorData] = useState('')
 
   const currentData = useMemo(() => temporalData.find(nd => nd.id === dataId), [temporalData, dataId])
   const currentIndex = useMemo(() => temporalData.findIndex(nd => nd.id === dataId), [temporalData, dataId])
@@ -34,15 +37,21 @@ const Pagos = () => {
   }
 
   const savePaid = () => {
-    const isSaveSelectSet = currentData?.metodoPago !== undefined
-    setIsSaveSelect(isSaveSelectSet)
-
-    if(!isSaveSelectSet) return
-
     // cambiar el estado a pagado
     handleChangePay(new Date())
 
-    // guardar en la data definitiva una copia
+    const validateResponse = dataRequiredSchema.safeParse(currentData)
+
+    if(!validateResponse.success){
+     const errorMessages = validateResponse.error.errors[0].message;
+     setErrorData(errorMessages)
+     return
+   }
+
+   setErrorData('')
+
+   // Aca hacer un POST a la DB para guardar 
+   
     saveToData()
     closeModal()
   }
@@ -60,13 +69,13 @@ const Pagos = () => {
   )
 
   const deletePaid = () => {
-    // aca hago un delete al api para eliminar la informacion de pago
+    // aca hago un DELETE a la DB para eliminar la informacion de pago
     closeModal()
   }
 
   // guardo el metodo de pago en la data temporal
   const onChangeMethodPay = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    // Aca haria un post al backend para guardar la opcion que eligio el usuario
+    console.log(e.target.value)
     if (!currentData) return
     editTemporalDataItem(
       currentIndex, {
@@ -156,7 +165,7 @@ const Pagos = () => {
         {/* body */}
         <div className="flex justify-center border border-graycustom-400 shadow-md py-10">
           {
-            !isSaveSelect && <p>Debe seleccionar una opción</p>
+          errorData && <p className="text-tangerine font-bold text-xl">{errorData}</p>
           }
           <div className="relative w-[900px] flex overflow-x-auto whitespace-nowrap">
 
