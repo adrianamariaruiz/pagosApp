@@ -4,6 +4,8 @@ import { CURRENCY_FORMAT, useDataStore } from "../store/app.store"
 import { dataArrayValidation } from "../validations/dataSchema"
 import Pagos from "../components/Pagos"
 
+// use Tailwind para los estilos porque me gusta, la conozco y es facil de usar, se pueden generar estilos custom para determinadas partes de codigo que se sabe se van a repetir mucho y crear colores, fuentes, tamaños, etc. que se van a usar en todo el proyecto.
+
 const HomePage = () => {
 
    const isEditable = useDataStore((store)=>store.isEditable)
@@ -11,9 +13,10 @@ const HomePage = () => {
    const totalToPay = useDataStore((store)=>store.totalToPay)
    const saveToData = useDataStore((store)=>store.saveToData)
    const newData = useDataStore((store) => store.temporalData)
-  //  Hacer GET a la DB para obtener la información
 
    const [errorData, setErrorData] = useState('')
+
+  //  Hacer GET a la DB para obtener la información
    
    const onClickSaveData = () => {
 
