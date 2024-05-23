@@ -2,6 +2,8 @@ import { IoAddCircleOutline, IoCalendarClearOutline, IoRemoveCircleOutline } fro
 import { CURRENCY_FORMAT, useDataStore } from '../store/app.store'
 import { useCallback, useMemo } from 'react';
 import DatePiker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import '../style/customCalendarStyle.css'
 
 interface Props {
   dataId: string
@@ -20,7 +22,6 @@ const AddPay = ({ dataId }: Props) => {
 
   const handleChangeDate = useCallback((value: Date) => {
     if (!currentData) return
-    console.log(value)
     editTemporalData(
       currentIndex,
       {
@@ -37,17 +38,6 @@ const AddPay = ({ dataId }: Props) => {
       {
         ...currentData,
         titulo: value
-      })
-  }, [currentData, editTemporalData, currentIndex]
-  )
-
-  const handlePayChange = useCallback((value: number) => {
-    if (!currentData) return
-    editTemporalData(
-      currentIndex,
-      {
-        ...currentData,
-        valor: value
       })
   }, [currentData, editTemporalData, currentIndex]
   )
@@ -97,14 +87,17 @@ const AddPay = ({ dataId }: Props) => {
 
   return (
     <div
-      className="w-36 flex flex-col items-center py-10 gap-2"
+      className="w-36 flex flex-col items-center py-16 gap-2"
     >
       {
         currentData.estado === 'pagado'
           ? <div className="w-12 h-12 text-xl rounded-full z-50 border-2 border-green-700 bg-green-700 flex justify-center items-center">
             🎉
           </div>
-          : <button className="w-12 h-12 rounded-full border-2 border-tangerine-700"></button>
+          : <>
+          <button className="bg-white w-12 h-12 rounded-full border-2 border-tangerine-700"></button>
+          {/* <hr className="border border-graycustom-400 w-full lg:w-4/5 absolute left-12 top-[90px]" /> */}
+          </>
       }
       <input
         className="font-bold w-full border border-graycustom rounded-sm px-1"
@@ -118,7 +111,7 @@ const AddPay = ({ dataId }: Props) => {
           className="font-semibold w-full outline-none"
           value={Number.isInteger(currentData.valor) ? currentData.valor : currentData.valor.toFixed(1)}
           disabled={currentData.estado === 'pagado'}
-          onChange={(e) => handlePayChange(Number(e.target.value))}
+          onChange={()=>{}}
         />
         <span className="text-graycustom">{CURRENCY_FORMAT}</span>
       </div>
@@ -131,9 +124,13 @@ const AddPay = ({ dataId }: Props) => {
           <IoRemoveCircleOutline className="h-6 w-6 text-tangerine-700" />
         </button>
         <div>
-          <p className="font-semibold w-full outline-none">
-            {Number.isInteger(currentData.porcentaje) ? currentData.porcentaje : currentData.porcentaje.toFixed(1)} <span>%</span>
-          </p>
+          <input 
+            className="font-semibold w-full outline-none"
+            onChange={()=>{}}
+            value={Number.isInteger(currentData.porcentaje) ? currentData.porcentaje : currentData.porcentaje.toFixed(1)}
+            disabled={currentData.estado === 'pagado'}
+          />
+          <span>%</span>
         </div>
         <button
           disabled={currentData.estado === 'pagado'}
@@ -159,6 +156,7 @@ const AddPay = ({ dataId }: Props) => {
             showIcon
             icon={<IoCalendarClearOutline className="h-4 w-4 text-tangerine-700" />}
             toggleCalendarOnIconClick
+            popperPlacement="bottom-end"
           />
         </div>
       </div>

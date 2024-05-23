@@ -181,7 +181,7 @@ const Pagos = () => {
                 data.map((item, index) => {
                   return (
                     <div key={item.id} className="flex flex-row">
-                      <div className=" w-36 flex flex-col items-center py-10 px-2">
+                      <div className="w-36 flex flex-col items-center py-10 px-2">
 
                         {
                           item.estado === 'pendiente' ?
@@ -198,12 +198,12 @@ const Pagos = () => {
                                 <IoPencilSharp className="h-5 w-5 text-tangerine-700 font-light opacity-0 hover:opacity-100 transition-opacity duration-75 absolute" />
                               </button>
                             }
-                              <hr className="border border-graycustom-400 w-4/5 absolute left-12 top-16" />
+                              <hr className="border border-graycustom-400 w-full lg:w-4/5 absolute left-12 top-16" />
                             </>
                             :
                             <>
                               <div
-                                className="relative w-12 h-12 text-xl rounded-full z-50 border-2 border-green-700 bg-green-700 flex justify-center items-center"
+                                className="w-12 h-12 text-xl rounded-full z-50 border-2 border-green-700 bg-green-700 flex justify-center items-center"
                               >
                                 <p>🎉</p>
                               </div>
@@ -213,7 +213,7 @@ const Pagos = () => {
                         <p className="font-semibold">{Number.isInteger(item.valor) ? item.valor : item.valor.toFixed(1)} {CURRENCY_FORMAT} <span>({Number.isInteger(item.porcentaje) ? item.porcentaje : item.porcentaje.toFixed(1)}%)</span></p>
                         {
                           item.estado === 'pagado'
-                            ? <div className="text-green-700"><p>{item.estado}</p> <p>{formatDate(new Date(item?.fechaPago ?? '').toLocaleDateString())}</p> <p>con {item.metodoPago}</p></div>
+                            ? <div className="text-green-700 font-semibold text-center"><p>{item.estado}</p> <p>{formatDate(new Date(item?.fechaPago ?? '').toLocaleDateString())}</p> <p>con {item.metodoPago}</p></div>
                             : <span>{formatDate(new Date(item?.fecha ?? '').toLocaleDateString())}</span>
                         }
                       </div>
@@ -245,7 +245,7 @@ const Pagos = () => {
             <form action="submit" >
               <label htmlFor="paid" className="flex flex-col pt-5">
                 <span>Estado</span>
-                <select name="paid" id="paid" className="border-2 border-graycustom-400 rounded-md p-2" onChange={onChangeMethodPay}>
+                <select name="paid" id="paid" className="outline-tangerine-600 border-2 border-graycustom-400 rounded-md p-2" onChange={onChangeMethodPay}>
                   <option value="">Selecciona</option>
                   <option value="Efectivo">Efectivo</option>
                   <option value="Tarjeta">Tarjeta</option>

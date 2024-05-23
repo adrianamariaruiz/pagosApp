@@ -1,0 +1,11 @@
+.react-datepicker{
+  font-size: 12px;
+  height: 230px;
+  width: auto ;
+  z-index: 100;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected{
+  background-color: #ff7a66 !important;
+  border-radius: 50% !important;
+}
