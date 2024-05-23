@@ -11,11 +11,11 @@ const HomePage = () => {
    const saveToData = useDataStore((store)=>store.saveToData)
    const newData = useDataStore((store) => store.temporalData)
 
-   const [isSaveDate, setIsDaveDate] = useState(true)
+   const [isSaveDate, setIsSaveDate] = useState(true)
    
    const onClickSaveData = () => {
     const isSaveDateSet = newData.every((item) => item.fecha !== undefined)
-    setIsDaveDate(isSaveDateSet)
+    setIsSaveDate(isSaveDateSet)
 
     if(!isSaveDateSet) return
 
