@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# PagosApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+El proyecto muestran los pagos de un cliente y cuenta con varias funcionalidades, como lo son: 
 
-Currently, two official plugins are available:
+- Los pagos creados suman un 100%, ni mas ni menos
+- Cuando se crea un nuevo pago, se divide el pago anterior a la mitad y si no hay pago anterior o ya está pagado el valor que se divide es el siguiente,
+- No se puede pagar una cuota si la anterior no se ha pagado.
+- al momento de elegir una fecha no se puede elegir una anterior a la fecha actual.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+El proyecto fue realizado con:
+- React.js
+- TypeScript 
+- Tailwind 
+- Zod
+- Zustand
+- DatePiker
 
-## Expanding the ESLint configuration
+## Creado por
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Adriana Maria Ruiz Henao
