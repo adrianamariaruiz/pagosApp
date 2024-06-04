@@ -12,7 +12,7 @@ const Navbar = () => {
           </Link>
         </div>
         <div className='hidden sm:flex'>
-          <Link className='m-2 p-2 transition-all rounded-md hover:bg-tangerine-500 hover:text-white' to="/list">Lista</Link>
+          <Link className='m-2 p-2 transition-all rounded-md hover:bg-tangerine-500 hover:text-white' to="/pagos">Pagos</Link>
         </div>
       </nav>
     </>

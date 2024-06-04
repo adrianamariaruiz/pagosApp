@@ -11,11 +11,13 @@ import { dataRequiredSchema } from "../validations/dataSchema"
 const Pagos = () => {
 
   const { data, saveToData, temporalData, editTemporalDataItem, addTemporalData, changeIsEditable, isEditable } = useDataStore((state) => state)
+
+  // const userId = useDataStore((store) => store.userId)
+
   const [isOpen, setIsOpen] = useState(false)
   const [dataId, setDataId] = useState('')
   const [errorData, setErrorData] = useState('')
 
-  // use los hooks de react useMemo y el useCallback para ahorrar memoria y que no se este calculando o ejecutando con cada renderización
   const currentData = useMemo(() => temporalData.find(nd => nd.id === dataId), [temporalData, dataId])
   const currentIndex = useMemo(() => temporalData.findIndex(nd => nd.id === dataId), [temporalData, dataId])
 
@@ -87,7 +89,6 @@ const Pagos = () => {
       changeIsEditable();
     }
 
-    // hice una validación del estado del pago porque lo necesitaba para saber que acción tomar, si modificar el siguiente pago o el anterior
     if(temporalData[index].estado === 'pagado'){
       const nextPendingIndex = index+1
 
@@ -163,7 +164,6 @@ const Pagos = () => {
           }
           <div className="relative w-[900px] flex overflow-x-auto whitespace-nowrap">
 
-            {/* Lo maneje afectando la temporal data miestras completaba los datos para luego empujarlos a la data final y asi mostrar la necesaria en el momento correcto */}
             {
               isEditable
                 ?
@@ -182,6 +182,7 @@ const Pagos = () => {
                   )
                 })
                 :
+                // debo traer la data de la bd
                 data.map((item, index) => {
                   return (
                     <div key={item.id} className="flex flex-row">

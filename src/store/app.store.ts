@@ -2,70 +2,75 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import currentFormat from '../helpers/currentFormat'
 import { Data } from '../interfaces/data.interface'
+import { mockUsersData } from '../helpers/mockData'
+import { User } from '../interfaces/user.interface'
 
-// Usé Zustand para el manejo de estado global porque es escalable, fácil y tiene el persist() para el manejo del localStoage
-
+// toca hacer algo antes de entrar, que al seleccionar el cliente traiga de base de datos todo, y lo guarda en zustand
 interface State {
+  userId: string
+  users: User[]
   data: Data[]
   temporalData: Data[]
   isEditable: boolean
   totalToPay: string
-  addData: (index:number,data: Data) => void
+  userData: { [key: string]: Data[] };
+
   addTemporalData: (index:number,data: Data) => void
   changeIsEditable: ()=>void
   editTemporalDataItem: (index:number, data:Data)=>void
-  editDataItem: (index:number, data:Data)=>void
   saveToData: ()=>void
+  setUserId: (info: string)=>void
+  saveInitialData: (data: Data[], userId: string) => void
+  getUserPayments: () => Data[];
 }
 
 // esto genera la opcion de usar la moneda que desee, la puse aca para poderla usar en cualquier parte del proyecto
-const initialId= crypto.randomUUID()
+// const initialId= crypto.randomUUID()
 export const INITIAL_PAY = 182
 export const CURRENCY_FORMAT = 'USD'
 const FORMAT_COUNTRY = 'en-US'
 
 export const useDataStore = create<State>()(
-  // use persist porque es una forma muy sencilla que tiene Zustand para usar el localStorage
+  
   persist(
-    (set) => ({
+    (set, get) => ({
+      userId: '',
       isEditable:false,
       totalToPay: currentFormat(INITIAL_PAY, CURRENCY_FORMAT, FORMAT_COUNTRY),
-      data: [
-        {
-          id: initialId,
-          titulo: 'Anticipo',
-          valor: 182,
-          porcentaje: 100,
-          fecha: new Date('2024-05-05'),
-          estado: 'pendiente',
-          metodoPago: undefined,
-          fechaPago: undefined
-        },
-      ],
-      temporalData: [
-        {
-          id: initialId,
-          titulo: 'Anticipo',
-          valor: 182,
-          porcentaje: 100,
-          fecha: new Date('2024-05-05'),
-          estado: 'pendiente',
-          metodoPago: undefined,
-          fechaPago: undefined
-        },
-      ],
+      users: mockUsersData,
+      userData: {},
+      data: [],
+      temporalData: [],
 
       // methods
-      addData: (index:number, data: Data) => set((state)=>({
-        data: [...state.data.slice(0,index), data, ...state.data.slice(index)]
-      })),
+      setUserId: (info: string) => set(() => ({userId: info})),
+      
+
+
+      saveInitialData: (data: Data[], userId: string) => set((state)=>{
+
+        const currentDataIds = new Set((state.userData[userId] || []).map((item) => item.id));
+        const uniqueNewData = data.filter((item) => !currentDataIds.has(item.id));
+        
+        return {
+        userData: {
+          ...state.userData,
+          [userId]: [...(state.userData[userId] || []), ...uniqueNewData]
+        },
+        temporalData: userId === state.userId ? [...(state.userData[userId] || []), ...uniqueNewData] : state.temporalData,
+        data: userId === state.userId ? [...(state.userData[userId] || []), ...uniqueNewData] : state.data
+      }
+    }),
+
 
 
       addTemporalData: (index:number, data: Data) => set((state)=>({
         temporalData: [...state.temporalData.slice(0,index), data, ...state.temporalData.slice(index)]
       })),
+
       changeIsEditable: ()=>set((state)=>({isEditable: !state.isEditable, data:[...state.temporalData]})),
       
+      // guarda en la data original
       saveToData: ()=>set((state)=>({data:[...state.temporalData]})),
       
       editTemporalDataItem: (index, data)=>{
@@ -77,15 +82,10 @@ export const useDataStore = create<State>()(
             return td
         })}))
       },
-      editDataItem: (index, info)=>{
-        set((state)=>({
-          data: state.data.map((td, i)=>{
-            if(i===index){
-              return info
-            }
-            return td
-        })}))
-      },
+      getUserPayments: () => {
+        const state = get();
+        return state.userData[state.userId] || [];
+      }
     }),
     {
       name: 'data'

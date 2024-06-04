@@ -16,11 +16,15 @@ const AddPay = ({ dataId }: Props) => {
   const initialPay = Number(totalToPay)
 
   const currentData = useMemo(() => newData.find(nd => nd.id === dataId), [newData, dataId])
+  console.log('temporalData', currentData)
+
   const currentIndex = useMemo(() => newData.findIndex(nd => nd.id === dataId), [newData, dataId])
+  console.log('currentIndex', currentIndex)
 
   const indexToEdit = currentIndex === 0 ? 1 : currentIndex - 1
 
   const handleChangeDate = useCallback((value: Date) => {
+    
     if (!currentData) return
     editTemporalData(
       currentIndex,

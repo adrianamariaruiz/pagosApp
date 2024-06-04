@@ -1,9 +1,9 @@
 import { metodosPago } from "../validations/dataSchema"
 
 export interface Data {
+  id: string
   estado: 'pendiente' | 'pagado'
   fecha?: Date
-  id: string
   porcentaje: number
   titulo: string
   valor: number

@@ -17,7 +17,7 @@ const HomePage = () => {
    const [errorData, setErrorData] = useState('')
 
   //  Hacer GET a la DB para obtener la información
-   
+     
    const onClickSaveData = () => {
 
     const validateResponse = dataArrayValidation.safeParse(newData)
